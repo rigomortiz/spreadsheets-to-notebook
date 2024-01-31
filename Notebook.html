@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font: 12px Arial;
+        margin:5px 0 0 0;
+      }
+      .title {
+        text-align: right;
+        color:#073763;
+      }
+      .text-error{
+        text-align: center;
+        color: #a94442;
+        margin:5px 5px 5px 5px;
+      }
+      .text-required{
+        text-align: left;
+        color:#073763;
+      }
+      input,select,textarea {
+        width : 240px;
+        margin: 0;
+        border: 1px solid transparent;
+        background-color: #f1f1f1;
+        padding: 10px;
+        font-size: 12px;
+        color: #073763;
+      }
+      input[type=text] {
+        background-color: #f1f1f1;
+        width: 100%;
+      }
+      input[type=button] {
+        width : 100px;
+        color: white;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        background-color: #073763;
+      }
+    </style>
+    <script>
+      let data = <?!= JSON.stringify(dataFromServerTemplate) ?>; // Stores the data directly in the javascript code
+
+      function downloadFile() {
+        document.getElementById("dlBtn").innerText = "Downloading..";
+
+        window.open(data.url, '_blank');
+
+        document.getElementById("dlBtn").disabled = true;
+      }
+
+      function form_data(form){
+        document.getElementById('mensaje').innerHTML = 'Generando...';
+        google.script.run.withSuccessHandler(onSuccess).generate(form);
+      };
+
+      function onSuccess(response) {
+        if (response.error === 'OK') {
+          closeIt();
+        } else if (response.error === 'NOK') {
+          document.getElementById('mensaje').innerHTML = response.message;
+        }
+      }
+
+      function closeIt(){
+        google.script.host.close()
+      };
+
+
+
+    </script>
+  </head>
+  <body>
+    <button id="dlBtn" onclick="downloadFile()">Abrir notebook</button>
+    <form>
+      <table cellpadding="2" cellspacing="2">
+        <tr>
+          <td width="40%" class="title" >Entorno (*) : </td>
+          <td width="60%" >
+            <select name="entorno" id="entorno" onchange="onEntornoChange()" required >
+              <option value="DESARROLLO">DESARROLLO</option>
+              <option value="PRODUCCION">PRODUCCI&Oacute;N</option>
+              <option value="EVENTUAL">EVENTUAL</option>
+            </select>
+          </td>
+        </tr>
+        <tr id="trUnidadAplicativa" >
+          <td class="title">Unidad Aplicativa (*) : </td>
+          <td><input type= "text" name="unidadAplicativa" id="unidadAplicativa" cols="30" placeholder="PSAN,KPFM" required ></select></td>
+        </tr>
+        <tr id="trFrecuencia" >
+          <td class="title">Frecuencia (*) : </td>
+          <td>
+            <select name="frecuencia" id="frecuencia" required >
+              <option value="DAILY">DAILY</option>
+              <option value="MONTHLY">MONTHLY</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="title">Generaci&oacute;n Puntual : </td>
+          <td>
+            <textarea name="puntualJobs" id="puntualJobs" rows="3" cols="30" placeholder="PXPVCP4011,PXPVCP4012" required></textarea>
+          </td>
+        </tr>
+        <tr id="trNombreEventual">
+          <td class="title">Nombre Malla (*) : </td>
+          <td><input type="text" name="nombreEventual" id="nombreEventual" placeholder="CR-PEXPVTMP-T02" required></td>
+        </tr>
+        <tr>
+          <td class="title">Correos Electr&oacute;nicos Copia: </td>
+          <td>
+            <textarea name="email" id="email" rows="3" cols="30" placeholder="prueba1@bbva.com,prueba2@bbva.com" required></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><div id="mensaje" class="text-error" ></div></td>
+        </tr>
+        <tr>
+          <td align="center" colspan="2">
+            <input type="button" value="Generar" onclick="form_data(document.forms[0])">
+            <input type="button" value="Cancelar" onclick="closeIt()">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"><div id="" class="text-required" ><br></div></td>
+        </tr>
+        <tr>
+          <td colspan="2"><div id="" class="text-required" >(*) Campos obligatorios.</div></td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>

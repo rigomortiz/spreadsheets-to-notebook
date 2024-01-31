@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+    <?!= HtmlService.createHtmlOutputFromFile('ExportToNotebook.css').getContent(); ?>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <!-- Below is the HTML code that defines the dialog element structure. -->
+    <div id="form">
+      <div class="block" id="dialog-elements">
+        <label for="dialog-action-select">
+          Selecciona un kernel:
+        </label>
+        <select class="width-100" id="dialog-action-select">
+          <option value="spark-python">spark-python</option>
+          <option value="spark-scala">spark-scala</option>
+        </select>
+      </div>
+      <div class="block" id="dialog-button-bar">
+          <button class="action" id="dialog-execute-button">Exportar</button>
+          <button id="dialog-cancel-button" onclick="google.script.host.close()">Cancelar</button>
+      </div>
+      <div id="dialog-status"></div>
+    </div>
+    <div id="link-notebook">
+      <div class="block" id="dialog-button-bar">
+        <p>Se creó el archivo en tu espacio de Drive</p>
+        <a class="button action" id="open-notebook" target="_blank">Abrir</a>
+        <button id="dialog-cancel-button" onclick="google.script.host.close()">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+    <?!= HtmlService.createHtmlOutputFromFile('ExportToNotebook.js').getContent(); ?>
+  </body>
+</html>
