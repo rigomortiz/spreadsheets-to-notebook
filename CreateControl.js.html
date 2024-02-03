@@ -1,0 +1,85 @@
+
+<script>
+  /**
+   * Run initializations on sidebar load.
+   */
+  $(function() {
+    console.log(data)
+    // Call the server here to retrieve any information needed to build
+    // the dialog, if necessary.
+
+    //$('#sidebar-value').val(data.sheetName);
+    //console.log('data.sheetName', data.sheetName)
+
+    var select = $('#select-paths');
+    data.rutas.forEach((e, id) => {
+      select.append('<div><input name="paths" type="checkbox" id="' + id +'" value="' + id + '"><label for="' + id +'">' + e[0] + ' ' + e[1] +'</label></div>');
+    });
+
+    var control = $('#control-action-select');
+    data.controles.forEach((e, id) => {
+      control.append('<option value="' + id + '">' + e[0] + '</option>');
+    });
+
+
+    // Assign handler functions to sidebar elements here, if needed.
+    $('#create-control-button').click({'rutas': data.rutas, 'controles': data.controles}, onCreateControlClick);
+
+  });
+
+  /**
+   * Calls the server to retrieve information from the sheet.
+   * Gets the value in the active cell, which is then placed in the
+   * sidebar text field.
+   */
+
+function onCreateControlClick(event) {
+  this.disabled = true;
+
+  let controles = event.data.controles
+  let rutas = event.data.rutas
+  let control = $('#control-action-select').val()
+  let control_selected = controles[control]
+  let rutas_selected = $.map($('input[name="paths"]:checked'), function(c){return c.value}).map(e => rutas[e])
+
+  let data = {
+    'rutas': rutas_selected, 'control': control_selected
+  }
+
+  console.log(data)
+
+  // Send the value to the server and handle the response.
+  google.script.run
+      .withSuccessHandler(
+        function(msg, element) {
+          // Respond to success conditions here.
+          $('#sidebar-value').val(msg);
+          showStatus('Pulled value successfully.');
+          element.disabled = false;
+        })
+      .withFailureHandler(
+        function(msg, element) {
+          // Respond to failure conditions here.
+          showStatus(msg, 'error');
+          element.disabled = false;
+        })
+      .withUserObject(this)
+      .createControl(data);
+
+  }
+
+  /**
+   * Displays the given status message in the sidebar.
+   *
+   * @param {String} msg The status message to display.
+   * @param {String} classId The message type (class id) that the message
+   *   should be displayed as.
+   */
+  function showStatus(msg, classId) {
+    $('#sidebar-status').removeClass().html(msg);
+    if (classId) {
+      $('#sidebar-status').addClass(classId);
+    }
+  }
+
+</script>

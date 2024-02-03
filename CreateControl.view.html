@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- Use a templated HTML printing scriptlet to import common stylesheet -->
+    <?!= HtmlService.createHtmlOutputFromFile('CreateControl.css').getContent(); ?>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      let data = <?!= JSON.stringify(dataFromServerTemplate) ?>; // Stores the data directly in the javascript code
+
+    </script>
+  </head>
+  <body>
+    <!-- Below is the HTML code that defines the sidebar element structure. -->
+    <div class="sidebar branding-below">
+      <form id="form" name="form">
+        <!--
+        <div class="block form-group" id="sidebar-value-block">
+          <label for="sidebar-value">Nombre de la hoja:</label>
+          <input id="sidebar-value" value="">
+        </div>
+        -->
+        <div class="block form-group" id="control-elements">
+          <label for="control-action-select">
+            Selecciona un control:
+          </label>
+          <select id="control-action-select">
+          </select>
+        </div>
+        <div class="block form-group" id="select-paths-block">
+          <label for="select-paths">Selecciona las rutas:</label>
+          <div id="select-paths"></div>
+        </div>
+        <div class="block" id="sidebar-button-bar">
+          <button id="create-control-button" class="action">Crear</button>
+        </div>
+        <div id="sidebar-status"></div>
+      </form>
+    </div>
+
+    <!-- Enter sidebar bottom-branding below. -->
+    <!--
+    <div class="sidebar bottom">
+    </div>
+     -->
+
+    <!-- Use a templated HTML printing scriptlet to import JavaScript. -->
+    <?!= HtmlService.createHtmlOutputFromFile('CreateControl.js').getContent(); ?>
+
+  </body>
+</html>
